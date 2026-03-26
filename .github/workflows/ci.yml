@@ -23,7 +23,7 @@ jobs:
 
       - run: pnpm install
 
-      - run: pnpm add -wD @vitest/coverage-v8
+      - run: pnpm add -wD @vitest/coverage-v8@1
 
       - name: Run unit tests
         run: pnpm run test:unit -- --coverage.enabled --coverage.reporter=lcov
@@ -52,7 +52,7 @@ jobs:
 
       - run: pnpm install
 
-      - run: pnpm add -wD @vitest/coverage-v8
+      - run: pnpm add -wD @vitest/coverage-v8@1
 
       - name: Build SSR
         run: pnpm run build:ssr
