@@ -26,10 +26,14 @@ jobs:
       - run: pnpm add -wD @vitest/coverage-v8@~1.0.4
 
       - name: Run unit tests
-        run: pnpm run test:unit -- --coverage.enabled --coverage.reporter=lcov
+        run: pnpm exec vitest run test/unit --coverage.enabled --coverage.reporter=lcov
+
+      - name: List coverage output
+        if: always()
+        run: find coverage -type f 2>/dev/null || echo "No coverage directory found"
 
       - name: Upload coverage to Qlty
-        if: always()
+        if: success()
         uses: qltysh/qlty-action/coverage@v2
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
@@ -60,8 +64,12 @@ jobs:
       - name: Run SSR tests
         run: pnpm exec vitest run server-renderer --coverage.enabled --coverage.reporter=lcov
 
-      - name: Upload SSR coverage to Qlty
+      - name: List SSR coverage output
         if: always()
+        run: find coverage -type f 2>/dev/null || echo "No coverage directory found"
+
+      - name: Upload SSR coverage to Qlty
+        if: success()
         uses: qltysh/qlty-action/coverage@v2
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
@@ -69,10 +77,14 @@ jobs:
           incomplete: true
 
       - name: Run compiler-sfc tests
-        run: pnpm run test:sfc -- --coverage.enabled --coverage.reporter=lcov
+        run: pnpm exec vitest run compiler-sfc --coverage.enabled --coverage.reporter=lcov
+
+      - name: List SFC coverage output
+        if: always()
+        run: find coverage -type f 2>/dev/null || echo "No coverage directory found"
 
       - name: Upload SFC coverage to Qlty
-        if: always()
+        if: success()
         uses: qltysh/qlty-action/coverage@v2
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
