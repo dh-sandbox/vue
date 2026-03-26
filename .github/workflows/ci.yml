@@ -24,7 +24,7 @@ jobs:
       - run: pnpm install
 
       - name: Run unit tests
-        run: pnpm run test:unit -- --coverage --coverage.reporter=lcov
+        run: pnpm run test:unit -- --coverage.enabled --coverage.reporter=lcov
 
       - name: Upload coverage to Qlty
         if: always()
@@ -54,7 +54,7 @@ jobs:
         run: pnpm run build:ssr
 
       - name: Run SSR tests
-        run: pnpm exec vitest run server-renderer --coverage --coverage.reporter=lcov
+        run: pnpm exec vitest run server-renderer --coverage.enabled --coverage.reporter=lcov
 
       - name: Upload SSR coverage to Qlty
         if: always()
@@ -65,7 +65,7 @@ jobs:
           incomplete: true
 
       - name: Run compiler-sfc tests
-        run: pnpm run test:sfc -- --coverage --coverage.reporter=lcov
+        run: pnpm run test:sfc -- --coverage.enabled --coverage.reporter=lcov
 
       - name: Upload SFC coverage to Qlty
         if: always()
