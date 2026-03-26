@@ -24,7 +24,15 @@ jobs:
       - run: pnpm install
 
       - name: Run unit tests
-        run: pnpm run test:unit
+        run: pnpm run test:unit -- --coverage --coverage.reporter=lcov
+
+      - name: Upload coverage to Qlty
+        if: always()
+        uses: qltysh/qlty-action/coverage@v2
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: coverage/lcov.info
+          incomplete: true
 
   ssr-sfc-test:
     runs-on: ubuntu-latest
@@ -42,11 +50,30 @@ jobs:
 
       - run: pnpm install
 
+      - name: Build SSR
+        run: pnpm run build:ssr
+
       - name: Run SSR tests
-        run: pnpm run test:ssr
+        run: pnpm exec vitest run server-renderer --coverage --coverage.reporter=lcov
+
+      - name: Upload SSR coverage to Qlty
+        if: always()
+        uses: qltysh/qlty-action/coverage@v2
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: coverage/lcov.info
+          incomplete: true
 
       - name: Run compiler-sfc tests
-        run: pnpm run test:sfc
+        run: pnpm run test:sfc -- --coverage --coverage.reporter=lcov
+
+      - name: Upload SFC coverage to Qlty
+        if: always()
+        uses: qltysh/qlty-action/coverage@v2
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: coverage/lcov.info
+          incomplete: true
 
   e2e-test:
     runs-on: ubuntu-latest
@@ -91,3 +118,16 @@ jobs:
 
       - name: Run type declaration tests
         run: pnpm run test:types
+
+  coverage-complete:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [unit-test, ssr-sfc-test]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Coverage complete
+        uses: qltysh/qlty-action/coverage@v2
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          complete: true
