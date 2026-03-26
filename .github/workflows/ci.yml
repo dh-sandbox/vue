@@ -28,10 +28,6 @@ jobs:
       - name: Run unit tests
         run: pnpm exec vitest run test/unit --coverage.enabled --coverage.reporter=lcov
 
-      - name: List coverage output
-        if: always()
-        run: find coverage -type f 2>/dev/null || echo "No coverage directory found"
-
       - name: Upload coverage to Qlty
         if: success()
         uses: qltysh/qlty-action/coverage@v2
@@ -64,10 +60,6 @@ jobs:
       - name: Run SSR tests
         run: pnpm exec vitest run server-renderer --coverage.enabled --coverage.reporter=lcov
 
-      - name: List SSR coverage output
-        if: always()
-        run: find coverage -type f 2>/dev/null || echo "No coverage directory found"
-
       - name: Upload SSR coverage to Qlty
         if: success()
         uses: qltysh/qlty-action/coverage@v2
@@ -78,10 +70,6 @@ jobs:
 
       - name: Run compiler-sfc tests
         run: pnpm exec vitest run compiler-sfc --coverage.enabled --coverage.reporter=lcov
-
-      - name: List SFC coverage output
-        if: always()
-        run: find coverage -type f 2>/dev/null || echo "No coverage directory found"
 
       - name: Upload SFC coverage to Qlty
         if: success()
@@ -145,5 +133,5 @@ jobs:
       - name: Coverage complete
         uses: qltysh/qlty-action/coverage@v2
         with:
+          command: complete
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
-          complete: true
